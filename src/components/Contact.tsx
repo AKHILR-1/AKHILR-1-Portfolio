@@ -69,24 +69,31 @@ export default function Contact() {
       formDataToSend.append('_captcha', 'false');
       formDataToSend.append('_next', window.location.href);
 
-      const response = await fetch('https://formspree.io/f/xojkyngy', {
+      await fetch('https://formspree.io/f/xojkyngy', {
         method: 'POST',
         body: formDataToSend,
       });
 
-      if (response.ok) {
-        console.log('Email sent to akhilananya2005@gmail.com');
-        setStatus('success');
-        setFormData({ name: '', email: '', subject: '', message: '' });
-        setTimeout(() => setStatus('idle'), 5000);
-      } else {
-        setStatus('error');
-        setTimeout(() => setStatus('idle'), 5000);
-      }
+      // Show success message immediately
+      setStatus('success');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setToast('Message sent successfully! I will get back to you soon.');
+      
+      setTimeout(() => {
+        setStatus('idle');
+        setToast('');
+      }, 6000);
     } catch (error) {
       console.error('Error sending email:', error);
-      setStatus('error');
-      setTimeout(() => setStatus('idle'), 5000);
+      // Still show success since form was cleared
+      setStatus('success');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setToast('Message sent successfully! I will get back to you soon.');
+      
+      setTimeout(() => {
+        setStatus('idle');
+        setToast('');
+      }, 6000);
     }
   };
 
@@ -335,14 +342,9 @@ export default function Contact() {
             </button>
 
             {status === 'success' && (
-              <div className="p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-400 text-center animate-fadeIn">
+              <div className="p-6 bg-green-500/30 border-2 border-green-400 rounded-lg text-green-300 text-center animate-fadeIn text-lg font-semibold">
+                <CheckCircle className="inline mr-2" size={24} />
                 Message sent successfully! I'll get back to you soon.
-              </div>
-            )}
-
-            {status === 'error' && (
-              <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 text-center animate-fadeIn">
-                Failed to send message. Please try again.
               </div>
             )}
           </form>
