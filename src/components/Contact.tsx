@@ -77,11 +77,9 @@ export default function Contact() {
       // Show success message immediately
       setStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
-      setToast('Message sent successfully! I will get back to you soon.');
       
       setTimeout(() => {
         setStatus('idle');
-        setToast('');
       }, 6000);
     } catch (error) {
       console.error('Error sending email:', error);
@@ -186,12 +184,6 @@ export default function Contact() {
                 </div>
               </div>
             </div>
-
-            {toast && (
-              <div className="fixed top-8 left-1/2 transform -translate-x-1/2 bg-green-500/20 border border-green-500/40 text-green-300 px-6 py-3 rounded-lg backdrop-blur-sm animate-fadeIn z-[9999] pointer-events-none">
-                {toast}
-              </div>
-            )}
 
             <div className="p-6 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-blue-500/20 rounded-xl hover:border-blue-500/50 transition-all duration-500">
               <div className="flex items-start gap-4">
