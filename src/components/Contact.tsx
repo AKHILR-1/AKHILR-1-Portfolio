@@ -12,7 +12,6 @@ export default function Contact() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPhoneMenu, setShowPhoneMenu] = useState(false);
-  const [toast, setToast] = useState<string>('');
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -86,11 +85,9 @@ export default function Contact() {
       // Still show success since form was cleared
       setStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
-      setToast('Message sent successfully! I will get back to you soon.');
       
       setTimeout(() => {
         setStatus('idle');
-        setToast('');
       }, 6000);
     }
   };
@@ -162,9 +159,7 @@ export default function Contact() {
                       <button
                         onClick={() => {
                           navigator.clipboard.writeText('+91 9740011684');
-                          setToast('Phone number copied');
                           setShowPhoneMenu(false);
-                          setTimeout(() => setToast(''), 2000);
                         }}
                         className="w-full px-6 py-4 text-left text-gray-300 hover:text-green-400 hover:bg-green-500/10 transition-all duration-300 flex items-center gap-3 border-b border-green-500/20"
                       >
