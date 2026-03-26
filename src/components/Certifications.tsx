@@ -90,18 +90,6 @@ export default function Certifications() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-16">
-          <div className="inline-block px-4 py-2 bg-purple-500/10 border border-purple-500/30 rounded-full text-purple-400 text-sm font-mono mb-4">
-            {'<'} CERTIFICATIONS {'>'}
-          </div>
-          <h2 className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent mb-4">
-            Professional Credentials
-          </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Industry-recognized certifications and specialized training
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {certifications.map((cert, index) => (
             <div
               key={index}
@@ -139,14 +127,14 @@ export default function Certifications() {
           ))}
         </div>
 
-        <div className="mt-20">
-          <div className="text-center mb-16">
-            <h3 className="text-4xl font-bold bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent mb-4">
+        <div className="mt-12 sm:mt-20">
+          <div className="text-center mb-12 sm:mb-16">
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent mb-4">
               Professional Training
             </h3>
           </div>
 
-          <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             {trainings.map((training, index) => (
               <div
                 key={index}
