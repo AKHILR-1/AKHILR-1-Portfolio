@@ -37,16 +37,16 @@ export default function Projects() {
   ];
 
   return (
-    <section id="projects" className="min-h-screen py-20 px-6 relative z-10">
+    <section id="projects" className="min-h-screen py-10 sm:py-20 px-4 sm:px-6 relative z-10">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <div className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full text-blue-400 text-sm font-mono mb-4">
+        <div className="text-center mb-12 sm:mb-16">
+          <div className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full text-blue-400 text-xs sm:text-sm font-mono mb-4">
             {'<'} SECURITY PROJECTS {'>'}
           </div>
-          <h2 className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-4">
             Deployed Solutions
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">
             Production-ready security tools and applications
           </p>
         </div>
