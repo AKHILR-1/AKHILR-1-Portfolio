@@ -80,21 +80,21 @@ export default function Achievements() {
   };
 
   return (
-    <section id="achievements" className="min-h-screen py-20 px-6 relative z-10">
+    <section id="achievements" className="min-h-screen py-10 sm:py-20 px-4 sm:px-6 relative z-10">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <div className="inline-block px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-full text-green-400 text-sm font-mono mb-4">
+        <div className="text-center mb-12 sm:mb-16">
+          <div className="inline-block px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-full text-green-400 text-xs sm:text-sm font-mono mb-4">
             {'<'} ACHIEVEMENTS {'>'}
           </div>
-          <h2 className="text-5xl font-bold bg-gradient-to-r from-green-400 to-cyan-500 bg-clip-text text-transparent mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-400 to-cyan-500 bg-clip-text text-transparent mb-4">
             Recognition & Awards
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto">
             Certifications, awards, and notable accomplishments
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {achievements.map((achievement, index) => {
             const colors = colorMap[achievement.color];
             const Icon = achievement.icon;

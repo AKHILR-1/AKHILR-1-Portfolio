@@ -46,7 +46,7 @@ export default function Hero() {
             B.Tech CSE student specializing in Cybersecurity. Expertise in ethical hacking, digital forensics, and security analysis. Oracle Cloud Infrastructure 2025 Certified Networking Professional.
           </p>
 
-          <div className="flex flex-wrap gap-2 sm:gap-4 pt-4">
+          <div className="flex flex-wrap gap-3 sm:gap-4 pt-6 sm:pt-4">
             <div className="relative w-full sm:w-auto">
               <button
                 onClick={() => setShowResumeMenu(!showResumeMenu)}
