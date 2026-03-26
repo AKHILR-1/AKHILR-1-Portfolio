@@ -14,12 +14,16 @@ export default function AnimatedBackground() {
   const particlesRef = useRef<Particle[]>([]);
   const mouseRef = useRef({ x: 0, y: 0 });
   const frameRef = useRef<number>();
+  const isTouchDeviceRef = useRef(false);
 
   useEffect(() => {
+    // Detect touch device
+    isTouchDeviceRef.current = (((navigator.maxTouchPoints || navigator.msMaxTouchPoints) || 0) > 0);
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
     const resize = () => {
@@ -30,18 +34,21 @@ export default function AnimatedBackground() {
     resize();
     window.addEventListener('resize', resize);
 
-    const particleCount = 150;
+    // Reduce particle count on mobile
+    const particleCount = isTouchDeviceRef.current ? 50 : 150;
     particlesRef.current = Array.from({ length: particleCount }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
+      vx: (Math.random() - 0.5) * (isTouchDeviceRef.current ? 0.3 : 0.5),
+      vy: (Math.random() - 0.5) * (isTouchDeviceRef.current ? 0.3 : 0.5),
       size: Math.random() * 2 + 0.5,
       opacity: Math.random() * 0.5 + 0.2,
     }));
 
     const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
+      if (!isTouchDeviceRef.current) {
+        mouseRef.current = { x: e.clientX, y: e.clientY };
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -70,9 +77,6 @@ export default function AnimatedBackground() {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Grid removed by user request
-      // drawGrid();
-
       particlesRef.current.forEach((particle, i) => {
         particle.x += particle.vx;
         particle.y += particle.vy;
@@ -80,13 +84,16 @@ export default function AnimatedBackground() {
         if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
         if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
 
-        const dx = mouseRef.current.x - particle.x;
-        const dy = mouseRef.current.y - particle.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        // Reduce mouse interaction on mobile
+        if (!isTouchDeviceRef.current) {
+          const dx = mouseRef.current.x - particle.x;
+          const dy = mouseRef.current.y - particle.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < 150) {
-          particle.x -= dx * 0.01;
-          particle.y -= dy * 0.01;
+          if (distance < 150) {
+            particle.x -= dx * 0.01;
+            particle.y -= dy * 0.01;
+          }
         }
 
         ctx.beginPath();
@@ -94,10 +101,12 @@ export default function AnimatedBackground() {
         ctx.fillStyle = `rgba(0, 255, 255, ${particle.opacity})`;
         ctx.fill();
 
-        particlesRef.current.forEach((otherParticle, j) => {
-          if (i === j) return;
-          const dx = particle.x - otherParticle.x;
-          const dy = particle.y - otherParticle.y;
+        // Reduce line connections on mobile
+        if (!isTouchDeviceRef.current) {
+          particlesRef.current.forEach((otherParticle, j) => {
+            if (i === j) return;
+            const dx = particle.x - otherParticle.x;
+            const dy = particle.y - otherParticle.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
           if (distance < 100) {
