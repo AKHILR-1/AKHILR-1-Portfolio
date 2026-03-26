@@ -107,17 +107,18 @@ export default function AnimatedBackground() {
             if (i === j) return;
             const dx = particle.x - otherParticle.x;
             const dy = particle.y - otherParticle.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+            const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance < 100) {
-            ctx.beginPath();
-            ctx.moveTo(particle.x, particle.y);
-            ctx.lineTo(otherParticle.x, otherParticle.y);
-            ctx.strokeStyle = `rgba(0, 255, 255, ${0.15 * (1 - distance / 100)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        });
+            if (distance < 100) {
+              ctx.beginPath();
+              ctx.moveTo(particle.x, particle.y);
+              ctx.lineTo(otherParticle.x, otherParticle.y);
+              ctx.strokeStyle = `rgba(0, 255, 255, ${0.15 * (1 - distance / 100)})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          });
+        }
       });
 
       frameRef.current = requestAnimationFrame(animate);
