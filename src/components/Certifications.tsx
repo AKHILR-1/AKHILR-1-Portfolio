@@ -93,25 +93,25 @@ export default function Certifications() {
           {certifications.map((cert, index) => (
             <div
               key={index}
-              className="group relative p-6 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-purple-500/20 rounded-xl hover:border-purple-500/50 transition-all duration-500 hover:shadow-xl hover:shadow-purple-500/20 hover:-translate-y-1"
+              className="group relative p-4 sm:p-6 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-purple-500/20 rounded-xl hover:border-purple-500/50 transition-all duration-500 hover:shadow-xl hover:shadow-purple-500/20 hover:-translate-y-1"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
               <div className="relative z-10 flex flex-col h-full">
                 <div className="mb-4">
-                  <div className="w-full h-80 bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-lg overflow-hidden border border-purple-500/30 group-hover:border-purple-500/50 transition-all duration-500">
+                  <div className="w-full h-48 sm:h-60 md:h-80 bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-lg overflow-hidden border border-purple-500/30 group-hover:border-purple-500/50 transition-all duration-500">
                     <img src={cert.image} alt={cert.title} className="w-full h-full object-contain" />
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2 mb-2">
                   <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={18} />
-                  <h3 className="text-lg font-bold text-white group-hover:text-purple-300 transition-colors duration-300">
+                  <h3 className="text-sm sm:text-base md:text-lg font-bold text-white group-hover:text-purple-300 transition-colors duration-300">
                     {cert.title}
                   </h3>
                 </div>
 
-                <div className="flex items-center justify-between text-sm mb-4">
+                <div className="flex items-center justify-between text-xs sm:text-sm mb-4">
                   <span className="text-purple-400 font-medium">{cert.issuer}</span>
                   <span className="text-gray-500">{cert.date}</span>
                 </div>
@@ -138,30 +138,30 @@ export default function Certifications() {
             {trainings.map((training, index) => (
               <div
                 key={index}
-                className="group relative p-6 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-blue-500/20 rounded-xl hover:border-blue-500/50 transition-all duration-500 hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-1"
+                className="group relative p-4 sm:p-6 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-blue-500/20 rounded-xl hover:border-blue-500/50 transition-all duration-500 hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-1"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 <div className="relative z-10 flex flex-col h-full">
                   <div className="mb-4">
-                    <div className="w-full h-80 bg-gradient-to-br from-blue-900/40 to-cyan-900/40 rounded-lg overflow-hidden border border-blue-500/30 group-hover:border-blue-500/50 transition-all duration-500">
+                    <div className="w-full h-48 sm:h-60 md:h-80 bg-gradient-to-br from-blue-900/40 to-cyan-900/40 rounded-lg overflow-hidden border border-blue-500/30 group-hover:border-blue-500/50 transition-all duration-500">
                       <img src={training.image} alt={training.title} className="w-full h-full object-contain" />
                     </div>
                   </div>
 
                   <div className="flex items-start gap-2 mb-2">
                     <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={18} />
-                    <h3 className="text-lg font-bold text-white group-hover:text-blue-300 transition-colors duration-300">
+                    <h3 className="text-sm sm:text-base md:text-lg font-bold text-white group-hover:text-blue-300 transition-colors duration-300">
                       {training.title}
                     </h3>
                   </div>
 
-                  <div className="flex items-center justify-between text-sm mb-4">
+                  <div className="flex items-center justify-between text-xs sm:text-sm mb-4">
                     <span className="text-blue-400 font-medium">{training.issuer}</span>
                     <span className="text-gray-500">{training.date}</span>
                   </div>
 
-                  <p className="text-gray-400 text-sm mb-3">{training.description}</p>
+                  <p className="text-gray-400 text-xs sm:text-sm mb-3">{training.description}</p>
                   <p className="text-gray-500 text-xs mb-4"><span className="text-gray-400 font-semibold">Tech:</span> {training.skills}</p>
 
                   <div className="mt-auto">
