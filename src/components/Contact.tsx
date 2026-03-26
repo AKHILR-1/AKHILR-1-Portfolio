@@ -5,6 +5,7 @@ export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    confirmEmail: '',
     subject: '',
     message: '',
   });
@@ -12,8 +13,33 @@ export default function Contact() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPhoneMenu, setShowPhoneMenu] = useState(false);
-  const [lastSubmitTime, setLastSubmitTime] = useState(0);
-  const RATE_LIMIT_MS = 2000; // Prevent spam - 2 second minimum between submissions
+  const RATE_LIMIT_MS = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+
+  // Check if user can submit based on last submission time
+  const canUserSubmit = (email: string): { allowed: boolean; message: string } => {
+    const storageKey = `lastSubmit_${email.toLowerCase()}`;
+    const lastSubmitStr = localStorage.getItem(storageKey);
+    
+    if (!lastSubmitStr) {
+      return { allowed: true, message: '' };
+    }
+    
+    const lastSubmitTime = parseInt(lastSubmitStr, 10);
+    const now = Date.now();
+    const timeSinceLastSubmit = now - lastSubmitTime;
+    
+    if (timeSinceLastSubmit < RATE_LIMIT_MS) {
+      const hoursRemaining = Math.ceil((RATE_LIMIT_MS - timeSinceLastSubmit) / (60 * 60 * 1000));
+      const minutesRemaining = Math.ceil((RATE_LIMIT_MS - timeSinceLastSubmit) / (60 * 1000));
+      const timeMsg = hoursRemaining >= 1 ? `${hoursRemaining} hour${hoursRemaining > 1 ? 's' : ''}` : `${minutesRemaining} minute${minutesRemaining > 1 ? 's' : ''}`;
+      return { 
+        allowed: false, 
+        message: `You can submit again after ${timeMsg}. Only one submission per 2 hours per email address.` 
+      };
+    }
+    
+    return { allowed: true, message: '' };
+  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -26,6 +52,12 @@ export default function Contact() {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Invalid email format';
+    }
+
+    if (!formData.confirmEmail.trim()) {
+      newErrors.confirmEmail = 'Please confirm your email';
+    } else if (formData.email !== formData.confirmEmail) {
+      newErrors.confirmEmail = 'Emails do not match';
     }
 
     if (!formData.subject.trim()) {
@@ -56,16 +88,15 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Rate limiting: prevent spam submissions
-    const now = Date.now();
-    if (now - lastSubmitTime < RATE_LIMIT_MS) {
+    if (!validateForm()) return;
+
+    // Rate limiting: check if user can submit based on email address
+    const { allowed, message } = canUserSubmit(formData.email);
+    if (!allowed) {
       setStatus('error');
-      setErrors({ submit: 'Please wait before submitting again' });
+      setErrors({ submit: message });
       return;
     }
-    setLastSubmitTime(now);
-
-    if (!validateForm()) return;
 
     setStatus('sending');
 
@@ -104,9 +135,13 @@ export default function Contact() {
         throw new Error('Network response was not ok');
       }
 
+      // Record submission time in localStorage for 2-hour rate limiting per email
+      const storageKey = `lastSubmit_${formData.email.toLowerCase()}`;
+      localStorage.setItem(storageKey, Date.now().toString());
+
       // Show success message
       setStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormData({ name: '', email: '', confirmEmail: '', subject: '', message: '' });
       setErrors({});
       
       setTimeout(() => {
@@ -289,6 +324,28 @@ export default function Contact() {
               {errors.email && (
                 <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
                   <XCircle size={14} /> {errors.email}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="confirmEmail" className="block text-sm font-medium text-cyan-400 mb-2">
+                Confirm Email *
+              </label>
+              <input
+                type="email"
+                id="confirmEmail"
+                name="confirmEmail"
+                value={formData.confirmEmail}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 bg-white/5 border ${
+                  errors.confirmEmail ? 'border-red-500' : 'border-cyan-500/30'
+                } rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-all duration-300`}
+                placeholder="Confirm your email address"
+              />
+              {errors.confirmEmail && (
+                <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
+                  <XCircle size={14} /> {errors.confirmEmail}
                 </p>
               )}
             </div>
