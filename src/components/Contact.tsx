@@ -12,6 +12,8 @@ export default function Contact() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPhoneMenu, setShowPhoneMenu] = useState(false);
+  const [lastSubmitTime, setLastSubmitTime] = useState(0);
+  const RATE_LIMIT_MS = 2000; // Prevent spam - 2 second minimum between submissions
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -39,14 +41,29 @@ export default function Contact() {
   };
 
   const sanitizeInput = (input: string) => {
-    return input
-      .replace(/[<>]/g, '')
+    // HTML entity encoding to prevent XSS
+    const htmlEncoded = input
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
       .trim()
       .slice(0, 1000);
+    return htmlEncoded;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Rate limiting: prevent spam submissions
+    const now = Date.now();
+    if (now - lastSubmitTime < RATE_LIMIT_MS) {
+      setStatus('error');
+      setErrors({ submit: 'Please wait before submitting again' });
+      return;
+    }
+    setLastSubmitTime(now);
 
     if (!validateForm()) return;
 
@@ -60,6 +77,10 @@ export default function Contact() {
     };
 
     try {
+      // Create abort controller for timeout (10 seconds)
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+
       const formDataToSend = new FormData();
       formDataToSend.append('name', sanitizedData.name);
       formDataToSend.append('email', sanitizedData.email);
@@ -68,27 +89,38 @@ export default function Contact() {
       formDataToSend.append('_captcha', 'false');
       formDataToSend.append('_next', window.location.href);
 
-      await fetch('https://formspree.io/f/xojkyngy', {
+      const response = await fetch('https://formspree.io/f/xojkyngy', {
         method: 'POST',
         body: formDataToSend,
+        signal: controller.signal,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+        },
       });
 
-      // Show success message immediately
+      clearTimeout(timeout);
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      // Show success message
       setStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
+      setErrors({});
       
       setTimeout(() => {
         setStatus('idle');
       }, 6000);
     } catch (error) {
-      console.error('Error sending email:', error);
-      // Still show success since form was cleared
-      setStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      // Only log in development
+      if (import.meta.env.DEV) {
+        console.error('Error sending email:', error);
+      }
       
-      setTimeout(() => {
-        setStatus('idle');
-      }, 6000);
+      // Show generic error to user
+      setStatus('error');
+      setErrors({ submit: 'Failed to send message. Please try again.' });
     }
   };
 
@@ -332,6 +364,13 @@ export default function Contact() {
               <div className="p-6 bg-green-500/30 border-2 border-green-400 rounded-lg text-green-300 text-center animate-fadeIn text-lg font-semibold">
                 <CheckCircle className="inline mr-2" size={24} />
                 Message sent successfully! I'll get back to you soon.
+              </div>
+            )}
+
+            {status === 'error' && errors.submit && (
+              <div className="p-6 bg-red-500/30 border-2 border-red-400 rounded-lg text-red-300 text-center animate-fadeIn">
+                <XCircle className="inline mr-2" size={20} />
+                {errors.submit}
               </div>
             )}
           </form>
