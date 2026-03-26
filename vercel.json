@@ -9,7 +9,7 @@
   ],
   "redirects": [
     {
-      "source": "/(.*)(.(?!js|css|gif|jpg|jpeg|png|webp|svg|ico|woff|woff2))?$",
+      "source": "/(.*)(.(?!js|css|gif|jpg|jpeg|png|webp|svg|ico|woff|woff2|xml|txt))?$",
       "destination": "/index.html",
       "statusCode": 200
     }
